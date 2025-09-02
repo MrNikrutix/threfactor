@@ -89,9 +89,17 @@ export async function POST(request: NextRequest) {
       // Dodaj ćwiczenia do sekcji
       if (sectionData.exercises && Array.isArray(sectionData.exercises)) {
         for (const exerciseData of sectionData.exercises) {
+          // POPRAWKA: Walidacja ex_id i użycie poprawnej nazwy pola
+          const exId = exerciseData.exId || exerciseData.ex_id;
+          
+          if (!exId) {
+            console.error('Missing ex_id for exercise:', exerciseData);
+            continue; // Pomiń ćwiczenie bez ID
+          }
+
           await db.insert(workout_exercises).values({
             section_id: section.id,
-            ex_id: exerciseData.ex_id,
+            ex_id: exId, // POPRAWKA: użyj exId zamiast exerciseData.ex_id
             sets: exerciseData.sets,
             quantity: exerciseData.quantity,
             unit: exerciseData.unit as ExerciseUnit,

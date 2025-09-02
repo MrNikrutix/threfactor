@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import type { WorkoutFormData } from "@/types/workout";
 
 interface EditWorkoutPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>; // POPRAWKA: params jako Promise
 }
 
 export default function EditWorkoutPage({ params }: EditWorkoutPageProps) {

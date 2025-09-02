@@ -39,10 +39,11 @@ async function getFullWorkout(workoutId: number) {
 // GET /api/workouts/[id] - Pobierz trening po ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params; // POPRAWKA: await params
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -73,10 +74,11 @@ export async function GET(
 // PUT /api/workouts/[id] - Zaktualizuj trening
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params; // POPRAWKA: await params
+    const id = parseInt(idParam);
     const body = await request.json();
     const { title, description, duration, sections } = body;
 
@@ -141,9 +143,17 @@ export async function PUT(
         // Dodaj ćwiczenia do sekcji
         if (sectionData.exercises && Array.isArray(sectionData.exercises)) {
           for (const exerciseData of sectionData.exercises) {
+            // POPRAWKA: Walidacja ex_id i użycie poprawnej nazwy pola
+            const exId = exerciseData.exId || exerciseData.ex_id;
+            
+            if (!exId) {
+              console.error('Missing ex_id for exercise:', exerciseData);
+              continue; // Pomiń ćwiczenie bez ID
+            }
+
             await db.insert(workout_exercises).values({
               section_id: section.id,
-              ex_id: exerciseData.ex_id,
+              ex_id: exId, // POPRAWKA: użyj exId zamiast exerciseData.ex_id
               sets: exerciseData.sets,
               quantity: exerciseData.quantity,
               unit: exerciseData.unit as ExerciseUnit,
@@ -172,10 +182,11 @@ export async function PUT(
 // DELETE /api/workouts/[id] - Usuń trening
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params; // POPRAWKA: await params
+    const id = parseInt(idParam);
 
     if (isNaN(id)) {
       return NextResponse.json(

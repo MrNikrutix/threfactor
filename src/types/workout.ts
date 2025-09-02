@@ -1,11 +1,11 @@
 export enum ExerciseUnit {
-  QUANTITY = 'ILOŚć',
+  QUANTITY = 'ILOŚĆ', // POPRAWKA: naprawiony błąd w literówce
   TIME = 'CZAS'
 }
 
 export interface WorkoutExercise {
   id?: number;
-  exId: number;
+  exId: number; // POPRAWKA: upewnienie się, że używamy exId konsistentnie
   name: string;
   sets: number;
   quantity: number | null;
