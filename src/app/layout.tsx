@@ -1,6 +1,8 @@
+import { SWRProvider } from '@/components/SWRProvider';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AdminPanelLayout>
+          <SWRProvider>
+            {children}
+          </SWRProvider>
+        </AdminPanelLayout>
       </body>
     </html>
   );
